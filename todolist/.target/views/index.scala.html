@@ -1,0 +1,73 @@
+@(tasks: List[Task], taskForm: Form[Task])
+@import helper._
+@main("Todo list") {  
+   <div id="submitTask">
+   <h2>Adicione uma nova tarefa:</h2>
+   <center> 
+   @form(routes.Application.newTask()) {
+        @inputText(taskForm("project"))
+        @inputText(taskForm("label"))<div id=info></div>
+        <input id="enviar" type="submit" value="Adicionar">
+   </div>
+   </center> 
+    }
+}
+    <div id="main"><center>
+    <div id="qtTarefas">
+    <h1>Você não tem nenhuma tarefa</h1>
+    </div>
+    <div id="do">--</div>
+    <ul id="alltasks">
+        @for(task <- tasks) {
+            <ul id="task" class="@task.isCompleted()">
+            	<h4>@task.getProject()</h4>
+                @task.label
+                @form(routes.Application.deleteTask(task.id)) {
+                    <input type="submit" value="Apagar" id="appagar">
+                    <input name="id" type="submit" formmethod="POST" formaction="/tasks/@task.getId()/completed" value="Concluida" class="b@task.isCompleted()" style="border-bottom: 2px solid #414141;">
+                }
+            </ul>
+        }
+    </ul>
+    </div>
+    
+    <script type="text/javascript">
+   		function hide_visibility(classname) { $("."+classname).hide(); }
+    	hide_visibility('btrue');
+    </script>
+	<script>
+		document.getElementById('label').placeholder=" Nova tarefa";
+		document.getElementById('project').placeholder=" Titulo";
+		document.getElementById('project').maxLength="50";
+		document.getElementById('label').maxLength="254";
+		//document.getElementsByClassName('btrue').setAttribute("class", "nn");
+	    if (@tasks.size() > 1){
+	   	 	document.getElementById('qtTarefas').innerHTML="<h1>Você tem @tasks.size() tarefas</h1>";
+	    }
+	    if (@Task.count(true) > 1){
+	   	 	document.getElementById('do').innerHTML="@Task.count(true) concluidas e @Task.count(false) a fazer";
+	    }
+	    if (@tasks.size() == 1){
+	      	 document.getElementById('qtTarefas').innerHTML="<h1>Você tem @tasks.size() tarefa</h1>";
+	    }
+	    if (@Task.count(true) == 1){
+	   	 	document.getElementById('do').innerHTML="@Task.count(true) concluida e @Task.count(false) a fazer";
+	    }
+	    if (@tasks.size() == 0){
+	     	 document.getElementById('alltasks').style.borderTopColor="#20b2aa";
+	    }
+	    if (@Task.count(true) == 0){
+	   	 	document.getElementById('do').innerHTML="Nenhuma concluida";
+	    }
+	    if (@Task.count(true) == @tasks.size()){
+	   	 	document.getElementById('do').innerHTML="Todas concluidas";
+	    }
+	    if (@tasks.size() == 0){
+	   	 	document.getElementById('do').innerHTML="";
+	    }
+	    if(document.getElementById("label_field").innerHTML.length > 254){
+	    	document.getElementById('label').style.borderColor="rgb(224, 11, 11)";
+	    	document.getElementsByClassName('error').innerHTML="<h1>Você tem @tasks.size() tarefa</h1>";
+	    }
+	    
+	</script>
